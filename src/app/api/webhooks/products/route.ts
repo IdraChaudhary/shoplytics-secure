@@ -1,13 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/database/connection';
+import { getDb } from '@/lib/database/connection';
 import { products, productVariants } from '@/lib/database/schemas';
+import { unstable_noStore as noStore } from 'next/cache';
+
+// Prevent static prerendering of this route
+export const dynamic = 'force-dynamic';
 import { eq, and } from 'drizzle-orm';
 import type { InsertProduct, InsertProductVariant } from '@/types/database';
 
 // Simulate Shopify product webhook
 export async function POST(request: NextRequest) {
   try {
+    // Prevent caching
+    noStore();
+    
     const payload = await request.json();
+    
+    // Initialize database connection
+    const db = getDb();
     
     // Extract tenant_id from headers
     const storeId = request.headers.get('x-store-id') || payload.store_id;
@@ -142,7 +152,13 @@ export async function POST(request: NextRequest) {
 // GET endpoint to retrieve products for a store
 export async function GET(request: NextRequest) {
   try {
+    // Prevent caching
+    noStore();
+    
     const { searchParams } = new URL(request.url);
+    
+    // Initialize database connection
+    const db = getDb();
     const storeId = searchParams.get('store_id');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');

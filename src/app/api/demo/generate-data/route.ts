@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { unstable_noStore as noStore } from 'next/cache';
-import { db, checkDatabaseConnection } from '@/lib/database/connection';
+import { getDb, checkDatabaseConnection } from '@/lib/database/connection';
 import { stores, products, productVariants, customers, orders, orderLineItems, orderEvents } from '@/lib/database/schemas';
 
 // Prevent static prerendering of this route
@@ -336,6 +336,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Initialize database connection
+    const db = getDb();
+    
     const results = {
       products: 0,
       variants: 0,

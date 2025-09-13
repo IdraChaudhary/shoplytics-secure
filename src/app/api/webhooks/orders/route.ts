@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/database/connection';
+import { getDb } from '@/lib/database/connection';
 import { orders, orderLineItems, customers, orderEvents } from '@/lib/database/schemas';
+import { unstable_noStore as noStore } from 'next/cache';
+
+// Prevent static prerendering of this route
+export const dynamic = 'force-dynamic';
 import { encryptData } from '@/lib/encryption/crypto';
 import { eq, and } from 'drizzle-orm';
 import type { ShopifyOrderWebhook, ShopifyShippingLine } from '@/types/webhooks';
@@ -9,7 +13,13 @@ import type { InsertCustomer, InsertOrder, InsertOrderLineItem, InsertOrderEvent
 // Simulate Shopify order webhook
 export async function POST(request: NextRequest) {
   try {
+    // Prevent caching
+    noStore();
+    
     const payload = await request.json() as ShopifyOrderWebhook;
+    
+    // Initialize database connection
+    const db = getDb();
     
     // Extract tenant_id from headers (in real Shopify, this would be from webhook URL or verification)
     const storeId = request.headers.get('x-store-id') || payload.store_id;
@@ -203,7 +213,13 @@ export async function POST(request: NextRequest) {
 // GET endpoint to retrieve orders for a store
 export async function GET(request: NextRequest) {
   try {
+    // Prevent caching
+    noStore();
+    
     const { searchParams } = new URL(request.url);
+    
+    // Initialize database connection
+    const db = getDb();
     const storeId = searchParams.get('store_id');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');

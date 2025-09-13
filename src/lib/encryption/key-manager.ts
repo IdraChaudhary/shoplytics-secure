@@ -1,4 +1,4 @@
-import { db } from '@/lib/database/connection';
+import { getDb } from '@/lib/database/connection';
 import { encryptionKeys, stores } from '@/lib/database/schemas';
 import { eq, and, desc } from 'drizzle-orm';
 import { generateStoreKey, encryptStoreKey, decryptStoreKey } from './crypto';
@@ -9,6 +9,7 @@ export class KeyManager {
    */
   static async getActiveStoreKey(storeId: string): Promise<string> {
     try {
+      const db = getDb();
       const keyRecord = await db
         .select()
         .from(encryptionKeys)
@@ -39,6 +40,8 @@ export class KeyManager {
    */
   static async generateNewStoreKey(storeId: string): Promise<string> {
     try {
+      const db = getDb();
+      
       // Generate new key
       const newKey = generateStoreKey();
       const encryptedKey = encryptStoreKey(newKey);
@@ -77,6 +80,8 @@ export class KeyManager {
   static async rotateStoreKey(storeId: string): Promise<void> {
     try {
       console.log(`Starting key rotation for store ${storeId}`);
+      
+      const db = getDb();
 
       // Step 1: Generate new key (but don't activate yet)
       const newKey = generateStoreKey();
@@ -181,6 +186,8 @@ export class KeyManager {
     try {
       console.log('Checking for keys that need rotation...');
 
+      const db = getDb();
+
       // Find keys that are close to expiration (30 days)
       const expirationThreshold = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
       
@@ -215,6 +222,7 @@ export class KeyManager {
    */
   static async getKeyHistory(storeId: string) {
     try {
+      const db = getDb();
       return await db
         .select({
           version: encryptionKeys.keyVersion,
@@ -238,6 +246,8 @@ export class KeyManager {
    */
   static async cleanupExpiredKeys(): Promise<void> {
     try {
+      const db = getDb();
+      
       // Keep keys for 2 years after rotation for audit purposes
       const retentionThreshold = new Date(Date.now() - 2 * 365 * 24 * 60 * 60 * 1000);
       
