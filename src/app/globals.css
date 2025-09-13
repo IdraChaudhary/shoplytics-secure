@@ -6,31 +6,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap');
 
-/* CSS Variables for Theme Support */
+/* CSS Variables for Theme Support - Girlie Shopping Aesthetic */
 :root {
-  /* Light theme colors */
-  --color-primary: 59 130 246; /* blue-500 */
-  --color-primary-dark: 37 99 235; /* blue-600 */
-  --color-primary-light: 147 197 253; /* blue-300 */
+  /* Light theme colors - Pink & Rose tones */
+  --color-primary: 219 39 119; /* pink-600 */
+  --color-primary-dark: 190 24 93; /* pink-700 */
+  --color-primary-light: 251 207 232; /* pink-200 */
   
-  --color-secondary: 100 116 139; /* slate-500 */
-  --color-secondary-dark: 71 85 105; /* slate-600 */
-  --color-secondary-light: 148 163 184; /* slate-400 */
+  --color-secondary: 161 98 149; /* rose-400 */
+  --color-secondary-dark: 136 70 124; /* rose-500 */
+  --color-secondary-light: 244 224 240; /* rose-100 */
   
   --color-success: 34 197 94; /* green-500 */
   --color-warning: 245 158 11; /* amber-500 */
   --color-error: 239 68 68; /* red-500 */
   
-  --color-bg: 255 255 255; /* white */
-  --color-bg-secondary: 248 250 252; /* slate-50 */
-  --color-bg-tertiary: 241 245 249; /* slate-100 */
+  --color-bg: 255 250 255; /* pink-tinted white */
+  --color-bg-secondary: 253 242 248; /* rose-50 */
+  --color-bg-tertiary: 251 207 232; /* pink-200 */
   
-  --color-text: 15 23 42; /* slate-900 */
-  --color-text-secondary: 71 85 105; /* slate-600 */
-  --color-text-tertiary: 148 163 184; /* slate-400 */
+  --color-text: 76 29 59; /* rose-900 */
+  --color-text-secondary: 159 18 57; /* rose-800 */
+  --color-text-tertiary: 190 24 93; /* pink-700 */
   
-  --color-border: 226 232 240; /* slate-200 */
-  --color-border-dark: 203 213 225; /* slate-300 */
+  --color-border: 244 224 240; /* rose-100 */
+  --color-border-dark: 225 175 207; /* rose-200 */
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -39,31 +39,31 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Dark theme */
+/* Dark theme - Sophisticated Dark Pink */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-primary: 96 165 250; /* blue-400 */
-    --color-primary-dark: 59 130 246; /* blue-500 */
-    --color-primary-light: 147 197 253; /* blue-300 */
+    --color-primary: 244 114 182; /* pink-400 */
+    --color-primary-dark: 219 39 119; /* pink-600 */
+    --color-primary-light: 251 207 232; /* pink-200 */
     
-    --color-secondary: 148 163 184; /* slate-400 */
-    --color-secondary-dark: 100 116 139; /* slate-500 */
-    --color-secondary-light: 203 213 225; /* slate-300 */
+    --color-secondary: 190 24 93; /* pink-700 */
+    --color-secondary-dark: 157 23 77; /* pink-800 */
+    --color-secondary-light: 219 39 119; /* pink-600 */
     
     --color-success: 74 222 128; /* green-400 */
     --color-warning: 251 191 36; /* amber-400 */
     --color-error: 248 113 113; /* red-400 */
     
-    --color-bg: 2 6 23; /* slate-950 */
-    --color-bg-secondary: 15 23 42; /* slate-900 */
-    --color-bg-tertiary: 30 41 59; /* slate-800 */
+    --color-bg: 24 5 15; /* very dark rose */
+    --color-bg-secondary: 39 7 25; /* dark rose */
+    --color-bg-tertiary: 76 29 59; /* rose-900 */
     
-    --color-text: 248 250 252; /* slate-50 */
-    --color-text-secondary: 203 213 225; /* slate-300 */
-    --color-text-tertiary: 148 163 184; /* slate-400 */
+    --color-text: 253 242 248; /* rose-50 */
+    --color-text-secondary: 244 224 240; /* rose-100 */
+    --color-text-tertiary: 225 175 207; /* rose-200 */
     
-    --color-border: 51 65 85; /* slate-700 */
-    --color-border-dark: 30 41 59; /* slate-800 */
+    --color-border: 76 29 59; /* rose-900 */
+    --color-border-dark: 39 7 25; /* dark rose */
   }
 }
 

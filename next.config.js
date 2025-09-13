@@ -1,14 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   images: {
     domains: ['cdn.shopify.com'],
   },
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
+
   // Webpack config for handling server-side modules
   webpack: (config, { isServer }) => {
     if (!isServer) {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import './globals.css';
 
 const inter = Inter({ 
@@ -9,7 +9,14 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: {
     default: 'Shoplytics Secure',
     template: '%s | Shoplytics Secure',
@@ -33,11 +40,6 @@ export const metadata: Metadata = {
   robots: {
     index: false, // Don't index in development/demo
     follow: false,
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
   },
   icons: {
     icon: '/favicon.ico',

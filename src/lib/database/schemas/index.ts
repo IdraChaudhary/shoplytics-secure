@@ -3,6 +3,7 @@ export * from './users';
 export * from './stores';
 export * from './customers';
 export * from './orders';
+export * from './products';
 export * from './audit';
 
 // Type definitions for easier use throughout the application
@@ -10,6 +11,7 @@ import { users, userStoreAccess } from './users';
 import { stores, encryptionKeys } from './stores';
 import { customers, customerSegments, customerSegmentMembership } from './customers';
 import { orders, orderLineItems, orderEvents } from './orders';
+import { products, productVariants, collections, productCollections } from './products';
 import { auditLogs, dataVersions, alerts } from './audit';
 
 export type User = typeof users.$inferSelect;
@@ -44,3 +46,15 @@ export type NewDataVersion = typeof dataVersions.$inferInsert;
 
 export type CustomerSegment = typeof customerSegments.$inferSelect;
 export type NewCustomerSegment = typeof customerSegments.$inferInsert;
+
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
+
+export type ProductVariant = typeof productVariants.$inferSelect;
+export type NewProductVariant = typeof productVariants.$inferInsert;
+
+export type Collection = typeof collections.$inferSelect;
+export type NewCollection = typeof collections.$inferInsert;
+
+export type ProductCollection = typeof productCollections.$inferSelect;
+export type NewProductCollection = typeof productCollections.$inferInsert;

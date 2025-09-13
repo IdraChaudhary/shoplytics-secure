@@ -1,43 +1,63 @@
+'use client';
+
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 dark:from-slate-950 dark:via-blue-950 dark:to-slate-950">
-      {/* Background decoration */}
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 dark:from-rose-950 dark:via-pink-950 dark:to-rose-900">
+      {/* Floral Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl animate-float" />
+        {/* Large floral elements */}
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-rose-400/20 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-rose-400/20 to-pink-500/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-pink-300/10 to-rose-300/10 rounded-full blur-3xl animate-float" />
+        
+        {/* Scattered floral accents */}
+        <div className="absolute top-20 left-20 w-32 h-32 opacity-10">
+          <div className="text-6xl animate-float" style={{ animationDelay: '1s' }}>🌸</div>
+        </div>
+        <div className="absolute top-40 right-32 w-24 h-24 opacity-10">
+          <div className="text-4xl animate-float" style={{ animationDelay: '3s' }}>🌺</div>
+        </div>
+        <div className="absolute bottom-32 left-1/4 w-28 h-28 opacity-10">
+          <div className="text-5xl animate-float" style={{ animationDelay: '2.5s' }}>🌹</div>
+        </div>
+        <div className="absolute bottom-20 right-20 w-20 h-20 opacity-10">
+          <div className="text-3xl animate-float" style={{ animationDelay: '4s' }}>💐</div>
+        </div>
       </div>
       
       {/* Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6 lg:px-8 backdrop-blur-sm">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">🛡️</span>
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center shadow-xl border-2 border-pink-200/50">
+              <span className="text-white font-bold text-xl">🛍️</span>
             </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-slate-950 animate-pulse" />
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full border-2 border-white dark:border-rose-950 animate-pulse flex items-center justify-center">
+              <span className="text-xs">✨</span>
+            </div>
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Shoplytics Secure</h1>
-            <p className="text-xs text-slate-600 dark:text-slate-400">Enterprise Analytics</p>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">Xeno Shopify Insights</h1>
+            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">Multi-Tenant Data Platform</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <Link
             href="/auth/signin"
-            className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            className="text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300 px-4 py-2 rounded-lg transition-colors font-medium hover:bg-rose-50 dark:hover:bg-rose-900/20"
           >
             Sign In
           </Link>
           <Link
             href="/auth/signup"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+            className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
           >
-            Sign Up
+            <span>🌸</span>
+            <span>Start Free Trial</span>
           </Link>
         </div>
       </nav>
@@ -316,7 +336,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </div>
     </div>
   );
 }
