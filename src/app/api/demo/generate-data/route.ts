@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/database/connection';
+import { unstable_noStore as noStore } from 'next/cache';
+import { db, checkDatabaseConnection } from '@/lib/database/connection';
 import { stores, products, productVariants, customers, orders, orderLineItems, orderEvents } from '@/lib/database/schemas';
+
+// Prevent static prerendering of this route
+export const dynamic = 'force-dynamic';
 import { encryptData } from '@/lib/encryption/crypto';
 
 // Demo data templates
@@ -314,10 +318,22 @@ const generateOrders = (storeId: string, customers: DemoCustomer[], products: De
 
 export async function POST(request: NextRequest) {
   try {
+    // Prevent caching
+    noStore();
+
     const { storeId } = await request.json();
 
     if (!storeId) {
       return NextResponse.json({ error: 'Store ID required' }, { status: 400 });
+    }
+
+    // Verify database connection before proceeding
+    const isConnected = await checkDatabaseConnection();
+    if (!isConnected) {
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again later.' },
+        { status: 503 }
+      );
     }
 
     const results = {
@@ -521,6 +537,30 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error generating demo data:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    
+    // Handle different types of errors with appropriate status codes
+    if (errorMessage.includes('connect ECONNREFUSED') || errorMessage.includes('database connection')) {
+      return NextResponse.json(
+        { error: 'Database connection failed', details: 'Could not connect to the database. Please check your database configuration.' },
+        { status: 503 }
+      );
+    }
+
+    if (errorMessage.includes('permission denied') || errorMessage.includes('access denied')) {
+      return NextResponse.json(
+        { error: 'Database access denied', details: 'Invalid database credentials or insufficient permissions.' },
+        { status: 403 }
+      );
+    }
+
+    if (errorMessage.includes('duplicate key')) {
+      return NextResponse.json(
+        { error: 'Data conflict', details: 'Some of the demo data already exists in the database.' },
+        { status: 409 }
+      );
+    }
+
+    // Default error response
     return NextResponse.json(
       { error: 'Failed to generate demo data', details: errorMessage },
       { status: 500 }
