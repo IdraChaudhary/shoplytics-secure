@@ -1,20 +1,27 @@
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { customers, orders, orderLineItems, orderEvents, products, productVariants } from '@/lib/database/schemas';
+import { 
+  dashboardCustomers, 
+  dashboardOrders, 
+  dashboardProducts, 
+  tenants,
+  webhookLogs,
+  analyticsCache
+} from '@/lib/database/schemas/tenants';
 
-export type InsertCustomer = InferInsertModel<typeof customers>;
-export type SelectCustomer = InferSelectModel<typeof customers>;
+export type InsertTenant = InferInsertModel<typeof tenants>;
+export type SelectTenant = InferSelectModel<typeof tenants>;
 
-export type InsertOrder = InferInsertModel<typeof orders>;
-export type SelectOrder = InferSelectModel<typeof orders>;
+export type InsertCustomer = InferInsertModel<typeof dashboardCustomers>;
+export type SelectCustomer = InferSelectModel<typeof dashboardCustomers>;
 
-export type InsertOrderLineItem = InferInsertModel<typeof orderLineItems>;
-export type SelectOrderLineItem = InferSelectModel<typeof orderLineItems>;
+export type InsertOrder = InferInsertModel<typeof dashboardOrders>;
+export type SelectOrder = InferSelectModel<typeof dashboardOrders>;
 
-export type InsertOrderEvent = InferInsertModel<typeof orderEvents>;
-export type SelectOrderEvent = InferSelectModel<typeof orderEvents>;
+export type InsertProduct = InferInsertModel<typeof dashboardProducts>;
+export type SelectProduct = InferSelectModel<typeof dashboardProducts>;
 
-export type InsertProduct = InferInsertModel<typeof products>;
-export type SelectProduct = InferSelectModel<typeof products>;
+export type InsertWebhookLog = InferInsertModel<typeof webhookLogs>;
+export type SelectWebhookLog = InferSelectModel<typeof webhookLogs>;
 
-export type InsertProductVariant = InferInsertModel<typeof productVariants>;
-export type SelectProductVariant = InferSelectModel<typeof productVariants>;
+export type InsertAnalyticsCache = InferInsertModel<typeof analyticsCache>;
+export type SelectAnalyticsCache = InferSelectModel<typeof analyticsCache>;

@@ -16,27 +16,43 @@ export function OverviewCards({ data, isLoading = false }: OverviewCardsProps) {
       value: data?.totalCustomers || 0,
       growth: data?.customersGrowth || 0,
       icon: '👥',
+      bgGradient: 'from-blue-500 to-cyan-500',
+      bgLight: 'bg-blue-50 dark:bg-blue-900/20',
+      textColor: 'text-blue-600 dark:text-blue-400',
+      description: 'Registered shoppers',
       format: (value: number) => value.toLocaleString(),
     },
     {
       title: 'Total Orders',
       value: data?.totalOrders || 0,
       growth: data?.ordersGrowth || 0,
-      icon: '📦',
+      icon: '🛒',
+      bgGradient: 'from-green-500 to-emerald-500',
+      bgLight: 'bg-green-50 dark:bg-green-900/20',
+      textColor: 'text-green-600 dark:text-green-400',
+      description: 'Successful purchases',
       format: (value: number) => value.toLocaleString(),
     },
     {
       title: 'Total Revenue',
       value: data?.totalRevenue || 0,
       growth: data?.revenueGrowth || 0,
-      icon: '💰',
+      icon: '💳',
+      bgGradient: 'from-purple-500 to-pink-500',
+      bgLight: 'bg-purple-50 dark:bg-purple-900/20',
+      textColor: 'text-purple-600 dark:text-purple-400',
+      description: 'Total sales value',
       format: (value: number) => `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     },
     {
       title: 'Average Order Value',
       value: data?.averageOrderValue || 0,
       growth: null, // AOV doesn't have a growth metric
-      icon: '📊',
+      icon: '💎',
+      bgGradient: 'from-orange-500 to-red-500',
+      bgLight: 'bg-orange-50 dark:bg-orange-900/20',
+      textColor: 'text-orange-600 dark:text-orange-400',
+      description: 'Average purchase',
       format: (value: number) => `$${value.toFixed(2)}`,
     },
   ];
@@ -47,14 +63,17 @@ export function OverviewCards({ data, isLoading = false }: OverviewCardsProps) {
         {[...Array(4)].map((_, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 animate-pulse"
+            className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 animate-pulse shadow-sm"
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
-              <div className="w-16 h-4 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-xl"></div>
+              <div className="w-20 h-6 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
             </div>
-            <div className="w-24 h-8 bg-slate-200 dark:bg-slate-700 rounded mb-2"></div>
-            <div className="w-20 h-4 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            <div className="space-y-3">
+              <div className="w-32 h-8 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
+              <div className="w-24 h-4 bg-slate-200 dark:bg-slate-700 rounded"></div>
+              <div className="w-28 h-3 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            </div>
           </div>
         ))}
       </div>
@@ -66,25 +85,33 @@ export function OverviewCards({ data, isLoading = false }: OverviewCardsProps) {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition-shadow duration-200"
+          className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white text-xl">
-              {card.icon}
-            </div>
-            {card.growth !== null && (
-              <GrowthIndicator growth={card.growth} />
-            )}
-          </div>
+          {/* Background decoration */}
+          <div className={`absolute top-0 right-0 w-20 h-20 ${card.bgLight} rounded-full -mr-10 -mt-10 opacity-20 group-hover:opacity-30 transition-opacity`}></div>
           
-          <div className="mb-1">
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
-              {card.format(card.value)}
+          <div className="relative">
+            <div className="flex items-center justify-between mb-6">
+              <div className={`w-12 h-12 bg-gradient-to-br ${card.bgGradient} rounded-xl flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform duration-200`}>
+                {card.icon}
+              </div>
+              {card.growth !== null && (
+                <GrowthIndicator growth={card.growth} />
+              )}
             </div>
-          </div>
-          
-          <div className="text-sm text-slate-600 dark:text-slate-400">
-            {card.title}
+            
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-slate-900 dark:text-white group-hover:scale-105 transition-transform origin-left">
+                {card.format(card.value)}
+              </div>
+              <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                {card.title}
+              </div>
+              <div className={`text-xs ${card.textColor} flex items-center`}>
+                <span className="inline-block w-2 h-2 rounded-full ${card.bgGradient.replace('from-', 'bg-').replace(' to-.*', '')} mr-2"></span>
+                {card.description}
+              </div>
+            </div>
           </div>
         </div>
       ))}
@@ -101,13 +128,14 @@ function GrowthIndicator({ growth }: GrowthIndicatorProps) {
   const Icon = isPositive ? ArrowUpIcon : ArrowDownIcon;
   
   return (
-    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${
       isPositive 
-        ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' 
-        : 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+        ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' 
+        : 'bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'
     }`}>
-      <Icon className="w-3 h-3" />
+      <Icon className="w-3.5 h-3.5" />
       <span>{Math.abs(growth)}%</span>
+      <span className="text-2xs opacity-60">{isPositive ? 'UP' : 'DOWN'}</span>
     </div>
   );
 }

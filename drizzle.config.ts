@@ -14,6 +14,7 @@ export default {
   driver: 'pg',
   dbCredentials: {
     connectionString: process.env.DATABASE_URL!,
+    ssl: true
   },
   verbose: true,
   strict: true,

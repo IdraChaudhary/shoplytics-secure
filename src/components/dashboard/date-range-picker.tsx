@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DateRange } from '@/types/dashboard';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, ShoppingCartIcon, TrendingUpIcon } from 'lucide-react';
 import { format, subDays, startOfWeek, startOfMonth, endOfWeek, endOfMonth } from 'date-fns';
 
 interface DateRangePickerProps {
@@ -17,6 +17,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
   const presets = [
     {
       label: 'Today',
+      description: 'Today\'s sales',
+      icon: '🛍️',
       getValue: () => ({
         from: new Date(),
         to: new Date(),
@@ -24,6 +26,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     },
     {
       label: 'Yesterday',
+      description: 'Previous day',
+      icon: '📊',
       getValue: () => {
         const yesterday = subDays(new Date(), 1);
         return {
@@ -34,6 +38,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     },
     {
       label: 'Last 7 days',
+      description: 'Weekly trends',
+      icon: '📈',
       getValue: () => ({
         from: subDays(new Date(), 7),
         to: new Date(),
@@ -41,6 +47,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     },
     {
       label: 'Last 30 days',
+      description: 'Monthly performance',
+      icon: '📅',
       getValue: () => ({
         from: subDays(new Date(), 30),
         to: new Date(),
@@ -48,6 +56,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     },
     {
       label: 'This week',
+      description: 'Current week',
+      icon: '🗓️',
       getValue: () => ({
         from: startOfWeek(new Date()),
         to: endOfWeek(new Date()),
@@ -55,6 +65,8 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     },
     {
       label: 'This month',
+      description: 'Current month',
+      icon: '🎯',
       getValue: () => ({
         from: startOfMonth(new Date()),
         to: endOfMonth(new Date()),
@@ -89,12 +101,17 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
     <div className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+        className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-white hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 min-w-[280px]"
       >
-        <CalendarIcon className="w-4 h-4" />
-        <span>{formatDateRange(value)}</span>
+        <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg">
+          <CalendarIcon className="w-4 h-4 text-white" />
+        </div>
+        <div className="flex-1 text-left">
+          <div className="font-semibold">{formatDateRange(value)}</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400">📊 Sales period</div>
+        </div>
         <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 transition-transform duration-200 text-slate-400 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -109,29 +126,42 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
-            <div className="p-4">
-              <div className="mb-4">
-                <h4 className="text-sm font-medium text-slate-900 dark:text-white mb-3">
-                  Quick select
-                </h4>
-                <div className="grid grid-cols-2 gap-2">
+          <div className="absolute right-0 top-full mt-2 w-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+            <div className="p-6">
+              <div className="mb-6">
+                <div className="flex items-center mb-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg mr-3">
+                    <ShoppingCartIcon className="w-4 h-4 text-white" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    Sales Period
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 gap-2">
                   {presets.map((preset) => (
                     <button
                       key={preset.label}
                       onClick={() => handlePresetClick(preset)}
-                      className="px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors text-left"
+                      className="flex items-center gap-3 px-4 py-3 text-slate-700 dark:text-slate-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 rounded-lg transition-all duration-200 text-left group"
                     >
-                      {preset.label}
+                      <span className="text-xl group-hover:scale-110 transition-transform">{preset.icon}</span>
+                      <div className="flex-1">
+                        <div className="font-medium">{preset.label}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400">{preset.description}</div>
+                      </div>
+                      <TrendingUpIcon className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                <h4 className="text-sm font-medium text-slate-900 dark:text-white mb-3">
-                  Custom range
-                </h4>
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
+                <div className="flex items-center mb-4">
+                  <span className="text-lg mr-2">🎯</span>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
+                    Custom Date Range
+                  </h4>
+                </div>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -158,12 +188,16 @@ export function DateRangePicker({ value, onChange, className = '' }: DateRangePi
                 </div>
               </div>
 
-              <div className="flex justify-end mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center">
+                  <span className="mr-1">📊</span>
+                  Analytics will update automatically
+                </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                  className="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
-                  Apply
+                  Apply Changes
                 </button>
               </div>
             </div>

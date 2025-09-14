@@ -1,12 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/database/connection';
-import { products, productVariants } from '@/lib/database/schemas';
+import { dashboardProducts } from '@/lib/database/schemas/tenants';
 import { unstable_noStore as noStore } from 'next/cache';
+import { eq, and } from 'drizzle-orm';
+import type { ShopifyProductWebhook, ShopifyProductVariant } from '@/types/webhooks';
 
 // Prevent static prerendering of this route
 export const dynamic = 'force-dynamic';
-import { eq, and } from 'drizzle-orm';
-import type { InsertProduct, InsertProductVariant } from '@/types/database';
+
+// Helper for getting base price from variants
+const getBasePrice = (variants: ShopifyProductVariant[] | undefined): string => {
+  if (!variants || variants.length === 0) return '0.00';
+  const prices = variants.map(v => parseFloat(v.price));
+  return Math.min(...prices).toFixed(2);
+};
+
+// Helper for getting compare at price from variants
+const getCompareAtPrice = (variants: ShopifyProductVariant[] | undefined): string | null => {
+  if (!variants || variants.length === 0) return null;
+  const compareAtPrices = variants
+    .map(v => v.compare_at_price ? parseFloat(v.compare_at_price) : null)
+    .filter((p): p is number => p !== null);
+  return compareAtPrices.length > 0 ? Math.min(...compareAtPrices).toFixed(2) : null;
+};
+
+// Helper for number parsing
+const parseIntSafe = (value: string | null | undefined, defaultValue = 0): number => {
+  if (!value) return defaultValue;
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? defaultValue : parsed;
+};
 
 // Simulate Shopify product webhook
 export async function POST(request: NextRequest) {
@@ -14,7 +37,7 @@ export async function POST(request: NextRequest) {
     // Prevent caching
     noStore();
     
-    const payload = await request.json();
+    const payload = await request.json() as ShopifyProductWebhook;
     
     // Initialize database connection
     const db = getDb();
@@ -26,111 +49,64 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Store ID required' }, { status: 400 });
     }
 
+    const tenantId = parseIntSafe(storeId);
+    if (tenantId === 0) {
+      return NextResponse.json({ error: 'Invalid store ID format' }, { status: 400 });
+    }
+
     // Check if product already exists
     const existingProduct = await db.select()
-      .from(products)
+      .from(dashboardProducts)
       .where(and(
-        eq(products.storeId, storeId),
-        eq(products.shopifyProductId, payload.id.toString())
+        eq(dashboardProducts.tenantId, tenantId),
+        eq(dashboardProducts.shopifyProductId, payload.id.toString())
       ))
       .limit(1);
 
-    let productId: string;
+    let productId: number;
 
     if (existingProduct.length > 0) {
       // Update existing product
       productId = existingProduct[0].id;
       
-      await db.update(products)
+      await db.update(dashboardProducts)
         .set({
           title: payload.title,
-          description: payload.body_html || payload.description,
-          vendor: payload.vendor,
-          productType: payload.product_type,
+          handle: payload.handle,
+          vendor: payload.vendor || 'Unknown',
+          productType: payload.product_type || 'General',
           status: payload.status || 'active',
-          publishedAt: payload.published_at ? new Date(payload.published_at) : null,
-          isPublished: payload.status === 'active' && payload.published_at,
-          seoTitle: payload.seo_title,
-          seoDescription: payload.seo_description,
-          tags: payload.tags ? payload.tags.split(',').map((tag: string) => tag.trim()) : [],
+          tags: payload.tags || '',
+          price: getBasePrice(payload.variants),
+          compareAtPrice: getCompareAtPrice(payload.variants),
+          variants: payload.variants || [],
           images: payload.images || [],
-          featuredImage: payload.image?.src || payload.images?.[0]?.src,
-          options: payload.options || [],
           shopifyUpdatedAt: new Date(payload.updated_at),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
-        .where(eq(products.id, productId));
+        .where(eq(dashboardProducts.id, productId));
     } else {
       // Create new product
-      const productData: InsertProduct = {
-        storeId,
+      const newProduct = await db.insert(dashboardProducts).values({
+        tenantId,
         shopifyProductId: payload.id.toString(),
         handle: payload.handle,
         title: payload.title,
-        description: payload.body_html || payload.description,
         vendor: payload.vendor || 'Unknown',
         productType: payload.product_type || 'General',
         status: payload.status || 'active',
-        publishedAt: payload.published_at ? new Date(payload.published_at) : new Date(),
-        isPublished: payload.status === 'active',
-        seoTitle: payload.seo_title,
-        seoDescription: payload.seo_description,
-        tags: payload.tags ? payload.tags.split(',').map((tag: string) => tag.trim()) : [],
+        tags: payload.tags || '',
+        price: getBasePrice(payload.variants),
+        compareAtPrice: getCompareAtPrice(payload.variants),
+        variants: payload.variants || [],
         images: payload.images || [],
-        featuredImage: payload.image?.src || payload.images?.[0]?.src,
-        options: payload.options || [],
-        totalSold: 0,
-        totalRevenue: '0.00',
-        reviewsCount: 0,
-        // Mock AI insights
-        popularityScore: (Math.random() * 5).toString(),
-        trendingStatus: Math.random() > 0.7 ? 'trending' : 'stable',
+        totalSales: '0.00',
+        totalQuantitySold: 0,
         shopifyCreatedAt: new Date(payload.created_at),
-        shopifyUpdatedAt: new Date(payload.updated_at || payload.created_at),
-      };
+        shopifyUpdatedAt: new Date(payload.updated_at)
+      }).returning();
       
-      const newProduct = await db.insert(products).values(productData).returning();
-
       productId = newProduct[0].id;
-    }
-
-    // Process product variants
-    if (payload.variants && payload.variants.length > 0) {
-      // Delete existing variants for update
-      if (existingProduct.length > 0) {
-        await db.delete(productVariants)
-          .where(eq(productVariants.productId, productId));
-      }
-
-      const variantsData: InsertProductVariant[] = payload.variants.map((variant: any) => ({
-        productId,
-        storeId,
-        shopifyVariantId: variant.id.toString(),
-        sku: variant.sku,
-        barcode: variant.barcode,
-        title: variant.title,
-        option1: variant.option1,
-        option2: variant.option2,
-        option3: variant.option3,
-        price: variant.price,
-        compareAtPrice: variant.compare_at_price || null,
-        costPerItem: variant.cost || null,
-        inventoryQuantity: variant.inventory_quantity || 0,
-        inventoryPolicy: variant.inventory_policy || 'deny',
-        inventoryManagement: variant.inventory_management || 'shopify',
-        weight: variant.weight ? variant.weight.toString() : null,
-        weightUnit: variant.weight_unit || 'g',
-        requiresShipping: variant.requires_shipping !== false,
-        taxable: variant.taxable !== false,
-        imageId: variant.image_id?.toString(),
-        position: variant.position || 1,
-        totalSold: 0,
-        revenue: '0.00',
-        shopifyCreatedAt: new Date(variant.created_at),
-        shopifyUpdatedAt: new Date(variant.updated_at || variant.created_at),
-      }));
-
-      await db.insert(productVariants).values(variantsData);
     }
 
     return NextResponse.json({
@@ -160,19 +136,24 @@ export async function GET(request: NextRequest) {
     // Initialize database connection
     const db = getDb();
     const storeId = searchParams.get('store_id');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const limit = parseIntSafe(searchParams.get('limit'), 50);
+    const offset = parseIntSafe(searchParams.get('offset'), 0);
 
     if (!storeId) {
       return NextResponse.json({ error: 'Store ID required' }, { status: 400 });
     }
 
+    const tenantId = parseIntSafe(storeId);
+    if (tenantId === 0) {
+      return NextResponse.json({ error: 'Invalid store ID format' }, { status: 400 });
+    }
+
     const storeProducts = await db.select()
-      .from(products)
-      .where(eq(products.storeId, storeId))
+      .from(dashboardProducts)
+      .where(eq(dashboardProducts.tenantId, tenantId))
       .limit(limit)
       .offset(offset)
-      .orderBy(products.createdAt);
+      .orderBy(dashboardProducts.createdAt);
 
     return NextResponse.json({
       products: storeProducts,

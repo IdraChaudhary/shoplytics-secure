@@ -217,31 +217,31 @@ async function processOrderWebhook(tenantId: number, order: ShopifyOrder) {
     .where(eq(dashboardOrders.shopifyOrderId, order.id.toString()))
     .limit(1);
 
-  const orderData = {
+    const orderData = {
     tenantId,
     shopifyOrderId: order.id.toString(),
     customerId,
-    orderNumber: order.order_number,
+    orderNumber: order.order_number.toString(),
     email: order.email,
-    totalPrice: order.total_price,
-    subtotalPrice: order.subtotal_price,
-    totalTax: order.total_tax,
-    totalDiscounts: order.total_discounts,
+    totalPrice: parseFloat(order.total_price),
+    subtotalPrice: parseFloat(order.subtotal_price),
+    totalTax: parseFloat(order.total_tax),
+    totalDiscounts: parseFloat(order.total_discounts || '0.00'),
+    shippingPrice: parseFloat(order.shipping_lines?.[0]?.price || '0.00'),
     currency: order.currency,
     financialStatus: order.financial_status,
     fulfillmentStatus: order.fulfillment_status,
+    source: order.source_name || 'web',
     orderDate: new Date(order.created_at),
     processedAt: order.processed_at ? new Date(order.processed_at) : null,
+    cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : null,
     lineItems: order.line_items,
     billingAddress: order.billing_address,
     shippingAddress: order.shipping_address,
     discountCodes: order.discount_codes,
     shopifyCreatedAt: new Date(order.created_at),
     shopifyUpdatedAt: new Date(order.updated_at),
-    updatedAt: new Date(),
-  };
-
-  if (existingOrder.length > 0) {
+  };  if (existingOrder.length > 0) {
     await db
       .update(dashboardOrders)
       .set(orderData)

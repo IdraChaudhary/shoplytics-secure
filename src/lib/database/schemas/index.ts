@@ -5,6 +5,7 @@ export * from './customers';
 export * from './orders';
 export * from './products';
 export * from './audit';
+export * from './tenants';
 
 // Type definitions for easier use throughout the application
 import { users, userStoreAccess } from './users';
