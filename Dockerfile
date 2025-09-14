@@ -1,14 +1,18 @@
-# Multi-stage build for production optimization
+# ==============================================
+# Multi-stage Dockerfile for Shoplytics
+# Optimized for production deployment
+# ==============================================
+
 FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat curl
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci --only=production --ignore-scripts
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -19,6 +23,12 @@ COPY . .
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
+
+# Install all dependencies for build
+RUN npm ci --ignore-scripts
+
+# Generate Prisma client
+RUN npx prisma generate
 
 # Build the application
 RUN npm run build
@@ -38,6 +48,17 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy Prisma files
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
+# Copy package files for runtime
+COPY --from=builder /app/package.json ./package.json
+
+# Create necessary directories and set permissions
+RUN mkdir -p /app/.next/cache
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 

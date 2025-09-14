@@ -3,8 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import NotificationSystem, { NotificationBell, SystemAlertsPanel } from '@/components/NotificationSystem';
+import MetricCard from '@/components/MetricCard';
+import DataFeedSimulator from '@/components/DataFeedSimulator';
+import { useShoplyticsStore, useDashboardMetrics, useNotifications } from '@/lib/store';
 import Link from 'next/link';
-import { 
+import {
   ShoppingBag, 
   Users, 
   Package, 
@@ -14,7 +18,12 @@ import {
   LogOut,
   Store,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Brain,
+  BookOpen,
+  Activity,
+  Beaker,
+  MessageSquare
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -26,29 +35,66 @@ interface DashboardStats {
 
 export default function DashboardPage() {
   const { tenant, logout } = useAuth();
+  const dashboardMetrics = useDashboardMetrics();
+  const { addNotification } = useNotifications();
+  const { 
+    isLoading,
+    error,
+    refreshData,
+    startAutoRefresh,
+    stopAutoRefresh,
+    setDashboardMetrics 
+  } = useShoplyticsStore();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDashboardStats();
+    startAutoRefresh();
+    
+    // Demo notification after load
+    setTimeout(() => {
+      addNotification({
+        type: 'success',
+        title: 'Dashboard Loaded',
+        message: 'Your dashboard is now live with real-time updates',
+        read: false,
+      });
+    }, 2000);
+    
+    return () => {
+      stopAutoRefresh();
+    };
   }, []);
 
   const fetchDashboardStats = async () => {
     try {
       // This would be replaced with actual API call to fetch tenant-specific stats
-      // For now, showing placeholder data
+      // For now, showing placeholder data with reactive store integration
       const mockStats: DashboardStats = {
-        customers: 1247,
-        products: 89,
-        orders: 342,
-        revenue: 45620.50
+        customers: 1247 + Math.floor(Math.random() * 10),
+        products: 89 + Math.floor(Math.random() * 5),
+        orders: 342 + Math.floor(Math.random() * 20),
+        revenue: 45620.50 + Math.random() * 1000
       };
       
+      // Update both local state and reactive store
       setStats(mockStats);
+      setDashboardMetrics({
+        ...mockStats,
+        conversionRate: 2.3 + Math.random() * 2,
+        avgOrderValue: (mockStats.revenue / mockStats.orders),
+        lastUpdated: new Date().toISOString()
+      });
+      
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
-      setError('Failed to load dashboard data');
+      addNotification({
+        type: 'error',
+        title: 'Data Sync Failed',
+        message: 'Unable to fetch latest dashboard data. Please refresh.',
+        read: false,
+      });
     } finally {
       setLoading(false);
     }
@@ -91,6 +137,50 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
+                <button
+                  onClick={refreshData}
+                  className="inline-flex items-center px-3 py-2 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                  disabled={isLoading}
+                >
+                  <TrendingUp className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                  {isLoading ? 'Syncing...' : 'Refresh'}
+                </button>
+                <NotificationBell />
+                <Link
+                  href="/tutorials"
+                  className="inline-flex items-center px-3 py-2 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100"
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Tutorials
+                </Link>
+                <Link
+                  href="/load-testing"
+                  className="inline-flex items-center px-3 py-2 border border-purple-300 rounded-md text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100"
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  Load Tests
+                </Link>
+                <Link
+                  href="/ab-testing"
+                  className="inline-flex items-center px-3 py-2 border border-purple-300 rounded-md text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100"
+                >
+                  <Beaker className="h-4 w-4 mr-2" />
+                  A/B Tests
+                </Link>
+                <Link
+                  href="/feedback"
+                  className="inline-flex items-center px-3 py-2 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Feedback
+                </Link>
+                <Link
+                  href="/showcase"
+                  className="inline-flex items-center px-3 py-2 border border-indigo-300 rounded-md text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100"
+                >
+                  <Brain className="h-4 w-4 mr-2" />
+                  Innovation
+                </Link>
                 <Link
                   href="/settings"
                   className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
@@ -138,7 +228,7 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Error Message */}
+          {/* Error & Alert Messages */}
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
               <div className="flex">
@@ -147,92 +237,73 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+          
+          {/* System Alerts - Reactive */}
+          <SystemAlertsPanel />
 
-          {/* Stats Grid */}
+          {/* Reactive Stats Grid */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            {/* Customers */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Users className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Customers
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        {stats?.customers?.toLocaleString() || '0'}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Products */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Package className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Products
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        {stats?.products?.toLocaleString() || '0'}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Orders */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <ShoppingCart className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Orders
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        {stats?.orders?.toLocaleString() || '0'}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Revenue */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <TrendingUp className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Revenue
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        {stats ? formatCurrency(stats.revenue) : '$0.00'}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <MetricCard
+              title="Total Customers"
+              value={stats?.customers || 0}
+              icon={Users}
+              iconColor="text-blue-600"
+              loading={isLoading && !stats}
+              change={{
+                value: Math.floor(Math.random() * 50),
+                percentage: 2.3 + Math.random() * 5,
+                trend: 'up',
+                period: 'last month'
+              }}
+              onClick={() => addNotification({
+                type: 'info',
+                title: 'Customer Details',
+                message: 'Viewing detailed customer analytics...',
+                read: false,
+              })}
+            />
+            
+            <MetricCard
+              title="Total Products"
+              value={stats?.products || 0}
+              icon={Package}
+              iconColor="text-green-600"
+              loading={isLoading && !stats}
+              change={{
+                value: Math.floor(Math.random() * 10),
+                percentage: 1.2 + Math.random() * 3,
+                trend: 'up',
+                period: 'last week'
+              }}
+            />
+            
+            <MetricCard
+              title="Total Orders"
+              value={stats?.orders || 0}
+              icon={ShoppingCart}
+              iconColor="text-purple-600"
+              loading={isLoading && !stats}
+              change={{
+                value: Math.floor(Math.random() * 30),
+                percentage: 4.7 + Math.random() * 6,
+                trend: 'up',
+                period: 'last month'
+              }}
+            />
+            
+            <MetricCard
+              title="Total Revenue"
+              value={stats?.revenue || 0}
+              icon={TrendingUp}
+              iconColor="text-orange-600"
+              loading={isLoading && !stats}
+              change={{
+                value: Math.floor(Math.random() * 5000),
+                percentage: 8.3 + Math.random() * 7,
+                trend: 'up',
+                period: 'last month'
+              }}
+            />
           </div>
 
           {/* Quick Actions */}
@@ -356,6 +427,12 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+        
+        {/* Reactive Notification System */}
+        <NotificationSystem />
+        
+        {/* Real-time Data Feed Simulator */}
+        <DataFeedSimulator enabled={!loading && !!stats} interval={15000} />
       </div>
     </ProtectedRoute>
   );
