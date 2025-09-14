@@ -216,7 +216,7 @@ const analytics = await shoplytics.analytics.getRevenue({
           </p>
           <div className="bg-gray-50 rounded-lg p-4">
             <code className="text-sm">
-              API_KEY: sk_live_xxxxxxxxxxxxxxxxxxxxxxxx<br/>
+              API_KEY: YOUR_API_KEY_HERE<br/>
               SHOP_DOMAIN: your-shop.myshopify.com
             </code>
           </div>
