@@ -99,6 +99,16 @@ export const PUT = withAuth(async (req: NextRequest, tenant: any) => {
     }
 
     // Update tenant in database
+    // Demo build: echo back provided settings without DB update
+    const updatedTenant = {
+      id: tenant.id,
+      name: updateData.name ?? tenant.name,
+      email: tenant.email,
+      shopDomain: updateData.shopDomain ?? tenant.shopDomain,
+      shopifyAccessToken: updateData.shopifyAccessToken ?? (tenant.hasShopifyIntegration ? 'present' : null),
+      apiKey: tenant.apiKey,
+    } as any;
+    /*
     const updatedTenant = await authService.prisma.tenant.update({
       where: { id: tenant.id },
       data: {
@@ -113,7 +123,7 @@ export const PUT = withAuth(async (req: NextRequest, tenant: any) => {
         shopifyAccessToken: true,
         apiKey: true
       }
-    });
+    });*/
 
     return NextResponse.json({
       success: true,

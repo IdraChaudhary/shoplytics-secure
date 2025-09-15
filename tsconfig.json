@@ -25,12 +25,12 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
+      "@/components/*": ["./src/components/*", "./components/*"],
       "@/lib/*": ["./lib/*", "./src/lib/*"],
       "@/types/*": ["./types/*", "./src/types/*"],
       "@/hooks/*": ["./hooks/*", "./src/hooks/*"],
       "@/utils/*": ["./utils/*", "./src/utils/*"],
-      "@/contexts/*": ["./contexts/*"]
+      "@/contexts/*": ["./contexts/*", "./src/contexts/*"]
     }
   },
   "include": [

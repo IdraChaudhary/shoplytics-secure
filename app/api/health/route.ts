@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { prisma } from '@/lib/prisma';
+// import { prisma } from '@/lib/prisma'; // Disabled for serverless build
 
 // Health check configuration
 const HEALTH_CHECK_CONFIG = {
@@ -39,7 +39,9 @@ interface HealthCheckResult {
 async function checkDatabase(): Promise<any> {
   const start = Date.now();
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    // await prisma.$queryRaw`SELECT 1`;
+    // In serverless demo mode, assume DB unavailable
+    throw new Error('DB disabled in demo build')
     return {
       status: 'pass',
       responseTime: Date.now() - start,

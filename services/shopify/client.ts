@@ -1,5 +1,5 @@
 import { shopifyApi, LATEST_API_VERSION } from '@shopify/shopify-api';
-import { RestClient } from '@shopify/shopify-api/rest/admin/2024-01';
+// import { RestClient } from '@shopify/shopify-api/rest/admin/2024-01';
 import axios, { AxiosInstance } from 'axios';
 import winston from 'winston';
 
@@ -31,7 +31,7 @@ export interface ShopifyRateLimit {
 }
 
 export class ShopifyClient {
-  private restClient: RestClient;
+  // private restClient: any;
   private axiosClient: AxiosInstance;
   private credentials: ShopifyCredentials;
   private rateLimitInfo: ShopifyRateLimit | null = null;
@@ -51,12 +51,7 @@ export class ShopifyClient {
       apiVersion: this.credentials.apiVersion
     });
 
-    this.restClient = new RestClient({
-      session: {
-        shop: this.credentials.shopDomain,
-        accessToken: this.credentials.accessToken
-      }
-    });
+    // RestClient removed in demo/serverless build. Using axios-only client.
 
     // Initialize Axios client for custom requests
     this.axiosClient = axios.create({

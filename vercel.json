@@ -11,10 +11,6 @@
     "app/api/**/*.ts": {
       "maxDuration": 30,
       "memory": 1024
-    },
-    "api/**/*.js": {
-      "maxDuration": 30,
-      "memory": 1024
     }
   },
   "headers": [
@@ -73,15 +69,7 @@
   "crons": [
     {
       "path": "/api/cron/sync-shopify-data",
-      "schedule": "0 */6 * * *"
-    },
-    {
-      "path": "/api/cron/cleanup-sessions",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/health-check",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 3 * * *"
     }
   ],
   "env": {

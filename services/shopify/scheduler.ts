@@ -70,7 +70,7 @@ export class ShopifySchedulerService {
     return {
       customers: {
         enabled: true,
-        schedule: '0 */6 * * *', // Every 6 hours
+        schedule: '0 2 * * *', // Daily at 2 AM (Vercel Hobby compatible)
         options: {
           batchSize: 100,
           concurrency: 2,
@@ -100,7 +100,7 @@ export class ShopifySchedulerService {
       },
       orders: {
         enabled: true,
-        schedule: '*/30 * * * *', // Every 30 minutes
+        schedule: '0 3 * * *', // Daily at 3 AM (Hobby compatible)
         options: {
           batchSize: 50,
           concurrency: 3,
@@ -419,7 +419,7 @@ export class ShopifySchedulerService {
     this.scheduleJob({
       id: 'shopify-health-check',
       name: 'Shopify API Health Check',
-      cron: '*/15 * * * *', // Every 15 minutes
+      cron: '0 4 * * *', // Daily at 4 AM (Hobby compatible)
       description: 'Check Shopify API connectivity for all tenants',
       enabled: true,
       status: 'idle',
@@ -441,7 +441,7 @@ export class ShopifySchedulerService {
     this.scheduleJob({
       id: 'rate-limit-monitor',
       name: 'Rate Limit Monitor',
-      cron: '*/5 * * * *', // Every 5 minutes
+      cron: '0 5 * * *', // Daily at 5 AM (Hobby compatible)
       description: 'Monitor Shopify API rate limits across tenants',
       enabled: true,
       status: 'idle',

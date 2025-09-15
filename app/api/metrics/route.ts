@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+// import { prisma } from '@/lib/prisma'; // Disabled for demo build to avoid Prisma client
 
 interface SystemMetrics {
   timestamp: string;
@@ -64,7 +64,8 @@ async function getDatabaseMetrics() {
   
   try {
     // Test database connectivity
-    await prisma.$queryRaw`SELECT 1`;
+    // await prisma.$queryRaw`SELECT 1`;
+    throw new Error('DB disabled in demo build')
     
     return {
       responseTime: Date.now() - start,
