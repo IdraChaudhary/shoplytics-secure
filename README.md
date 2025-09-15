@@ -1,4 +1,5 @@
-# 🛡️ Shoplytics Secure
+# 🛡️ Shoplytics Secure 
+Technical Documentation -https://docs.google.com/document/d/17BAkIMc5EqXXGuR4ptLieHAXAxV8s7x3XDqCtezWIMY/edit?usp=sharing
 
 A privacy-first, AI-assisted multi-tenant Shopify insights platform designed for enterprise retailers who take data security seriously.
 
