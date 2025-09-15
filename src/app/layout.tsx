@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { CartProvider } from '@/src/components/store/cart'
+import CartDrawer from '@/src/components/shop/CartDrawer'
+import Navbar from '@/src/components/shop/Navbar'
 import './globals.css';
 
 const inter = Inter({ 
@@ -62,9 +65,13 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100`}>
         <ThemeProvider defaultTheme="system">
-          <div id="root" className="relative flex min-h-screen flex-col">
-            {children}
-          </div>
+          <CartProvider>
+            <Navbar />
+            <div id="root" className="relative flex min-h-screen flex-col">
+              {children}
+            </div>
+            <CartDrawer />
+          </CartProvider>
           {/* Toast notifications container */}
           <div id="toast-container" className="fixed top-4 right-4 z-50" />
         </ThemeProvider>

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShoppingBag, TrendingUp, Shield, Zap } from 'lucide-react';
 
+import ProductsGrid from '@/src/components/shop/ProductsGrid'
+
 export default function HomePage() {
   const { tenant, loading } = useAuth();
   const router = useRouter();
@@ -97,8 +99,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Product Grid */}
+      <ProductsGrid />
+
       {/* Features Section */}
-      <section className="py-16 bg-white/50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
@@ -109,9 +114,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {/* Feature 1 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow flex flex-col h-full">
               <div className="bg-gradient-to-r from-blue-100 to-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <TrendingUp className="h-6 w-6 text-blue-600" />
               </div>
@@ -125,7 +130,7 @@ export default function HomePage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow flex flex-col h-full">
               <div className="bg-gradient-to-r from-green-100 to-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <Shield className="h-6 w-6 text-green-600" />
               </div>
@@ -139,7 +144,7 @@ export default function HomePage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow flex flex-col h-full">
               <div className="bg-gradient-to-r from-purple-100 to-pink-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <Zap className="h-6 w-6 text-purple-600" />
               </div>
@@ -156,7 +161,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-20 mt-12 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-extrabold text-white mb-4">
             Ready to unlock your store's potential?

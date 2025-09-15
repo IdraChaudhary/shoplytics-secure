@@ -1,0 +1,44 @@
+// Prisma schema for Shoplytics Secure
+// Provider: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Tenant {
+  id                  String       @id @default(cuid())
+  name                String
+  email               String       @unique
+  password            String
+  shopDomain          String?      @unique
+  shopifyAccessToken  String?
+  apiKey              String       @unique
+  webhookSecret       String
+  status              TenantStatus @default(ACTIVE)
+  isActive            Boolean      @default(true)
+  lastLoginAt         DateTime?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+model WebhookLog {
+  id             String   @id @default(cuid())
+  tenantId       String
+  topic          String
+  shopifyId      String?
+  payload        Json?
+  processed      Boolean  @default(false)
+  error          String?
+  processingTime Int?
+  createdAt      DateTime @default(now())
+}

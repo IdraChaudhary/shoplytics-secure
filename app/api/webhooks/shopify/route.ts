@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-// import { prisma } from '@/lib/prisma'; // Disabled for serverless demo build
+import { prisma } from '@/lib/prisma';
 import { logError, logInfo, timeOperation } from '@/lib/monitoring';
 
 // Webhook security configuration
@@ -75,13 +75,13 @@ function validateWebhookRequest(request: NextRequest): { isValid: boolean; error
 // Get tenant from shop domain
 async function getTenantFromShop(shopDomain: string) {
   try {
-    // Demo: resolve to a mock tenant to avoid DB dependency
-    return {
-      id: 'demo-tenant',
-      name: 'Demo Store',
-      shopifyDomain: shopDomain,
-      status: 'ACTIVE'
-    } as any;
+    const tenant = await prisma.tenant.findFirst({
+      where: {
+        shopDomain: shopDomain,
+        isActive: true
+      }
+    });
+    return tenant;
   } catch (error) {
     logError('Failed to find tenant for shop domain', { shopDomain, error });
     return null;
@@ -242,7 +242,11 @@ async function handleAppUninstalled(payload: any, tenant: any) {
       shopDomain: payload.domain,
     });
 
-    // Deactivate tenant (demo: no DB)
+    // Deactivate tenant
+    await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: { isActive: false, status: 'INACTIVE' }
+    })
     
     endTiming('success');
     return { processed: true, deactivated: true };
