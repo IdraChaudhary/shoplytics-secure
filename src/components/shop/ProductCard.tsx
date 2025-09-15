@@ -28,7 +28,7 @@ export default function ProductCard({ product }: Props) {
       <div className="p-3">
         <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">{product.title}</h3>
         {price && (
-          <p className="text-sm text-gray-600 mt-1">{new Intl.NumberFormat(undefined, { style: 'currency', currency: price.currencyCode }).format(parseFloat(price.amount))}</p>
+          <p className="text-sm text-gray-600 mt-1 tabular-nums">{new Intl.NumberFormat(undefined, { style: 'currency', currency: price.currencyCode, maximumFractionDigits: 0 }).format(parseFloat(price.amount))}</p>
         )}
       </div>
     </Link>

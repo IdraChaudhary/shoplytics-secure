@@ -81,6 +81,7 @@ export default function SearchBar() {
           id="search-results"
           role="listbox"
           className="absolute mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg z-50 max-h-80 overflow-auto"
+          aria-label="Search results"
         >
           {results.length === 0 ? (
             <div className="p-3 text-sm text-gray-500">No results</div>

@@ -37,7 +37,7 @@ export default async function ProductPage({ params }: { params: { handle: string
           {variants.map((v) => (
             <div key={v.id} className="flex items-center justify-between rounded border p-3">
               <div className="text-sm font-medium">{v.title}</div>
-              <div className="text-sm text-gray-700">{new Intl.NumberFormat(undefined, { style: 'currency', currency: v.price.currencyCode }).format(parseFloat(v.price.amount))}</div>
+              <div className="text-sm text-gray-700 tabular-nums">{new Intl.NumberFormat(undefined, { style: 'currency', currency: v.price.currencyCode, maximumFractionDigits: 0 }).format(parseFloat(v.price.amount))}</div>
               <AddToCartButton variant={{ id: v.id, title: v.title, price: v.price.amount, image: images[0]?.url, handle: product.handle }} />
             </div>
           ))}
