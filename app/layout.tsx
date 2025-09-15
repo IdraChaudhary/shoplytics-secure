@@ -31,6 +31,12 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <CartProvider>
               <Navbar />
+              {(!process.env.SHOPIFY_STORE_DOMAIN || !process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN) && (
+                <div className="bg-amber-50 border-y border-amber-200 text-amber-900 text-sm px-4 py-2 text-center">
+                  Storefront API is not fully configured. Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_ACCESS_TOKEN in your environment.
+                  <a href="/api/storefront/health" className="ml-2 underline">Check</a>
+                </div>
+              )}
               <div id="root" className="relative flex min-h-screen flex-col">
                 {children}
               </div>
