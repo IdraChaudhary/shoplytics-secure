@@ -1,0 +1,395 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Inter font for better typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap');
+
+/* CSS Variables for Theme Support - Girlie Shopping Aesthetic */
+:root {
+  /* Light theme colors - Pink & Rose tones */
+  --color-primary: 219 39 119; /* pink-600 */
+  --color-primary-dark: 190 24 93; /* pink-700 */
+  --color-primary-light: 251 207 232; /* pink-200 */
+  
+  --color-secondary: 161 98 149; /* rose-400 */
+  --color-secondary-dark: 136 70 124; /* rose-500 */
+  --color-secondary-light: 244 224 240; /* rose-100 */
+  
+  --color-success: 34 197 94; /* green-500 */
+  --color-warning: 245 158 11; /* amber-500 */
+  --color-error: 239 68 68; /* red-500 */
+  
+  --color-bg: 255 250 255; /* pink-tinted white */
+  --color-bg-secondary: 253 242 248; /* rose-50 */
+  --color-bg-tertiary: 251 207 232; /* pink-200 */
+  
+  --color-text: 76 29 59; /* rose-900 */
+  --color-text-secondary: 159 18 57; /* rose-800 */
+  --color-text-tertiary: 190 24 93; /* pink-700 */
+  
+  --color-border: 244 224 240; /* rose-100 */
+  --color-border-dark: 225 175 207; /* rose-200 */
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Dark theme - Sophisticated Dark Pink */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: 244 114 182; /* pink-400 */
+    --color-primary-dark: 219 39 119; /* pink-600 */
+    --color-primary-light: 251 207 232; /* pink-200 */
+    
+    --color-secondary: 190 24 93; /* pink-700 */
+    --color-secondary-dark: 157 23 77; /* pink-800 */
+    --color-secondary-light: 219 39 119; /* pink-600 */
+    
+    --color-success: 74 222 128; /* green-400 */
+    --color-warning: 251 191 36; /* amber-400 */
+    --color-error: 248 113 113; /* red-400 */
+    
+    --color-bg: 24 5 15; /* very dark rose */
+    --color-bg-secondary: 39 7 25; /* dark rose */
+    --color-bg-tertiary: 76 29 59; /* rose-900 */
+    
+    --color-text: 253 242 248; /* rose-50 */
+    --color-text-secondary: 244 224 240; /* rose-100 */
+    --color-text-tertiary: 225 175 207; /* rose-200 */
+    
+    --color-border: 76 29 59; /* rose-900 */
+    --color-border-dark: 39 7 25; /* dark rose */
+  }
+}
+
+.dark {
+  --color-primary: 96 165 250;
+  --color-primary-dark: 59 130 246;
+  --color-primary-light: 147 197 253;
+  
+  --color-secondary: 148 163 184;
+  --color-secondary-dark: 100 116 139;
+  --color-secondary-light: 203 213 225;
+  
+  --color-success: 74 222 128;
+  --color-warning: 251 191 36;
+  --color-error: 248 113 113;
+  
+  --color-bg: 2 6 23;
+  --color-bg-secondary: 15 23 42;
+  --color-bg-tertiary: 30 41 59;
+  
+  --color-text: 248 250 252;
+  --color-text-secondary: 203 213 225;
+  --color-text-tertiary: 148 163 184;
+  
+  --color-border: 51 65 85;
+  --color-border-dark: 30 41 59;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+  line-height: 1.6;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-bg-secondary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-border-dark));
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-secondary));
+}
+
+::-webkit-scrollbar-corner {
+  background: rgb(var(--color-bg-secondary));
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 dark:text-slate-200 dark:bg-slate-800 dark:border-slate-600 dark:hover:bg-slate-700;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800;
+}
+
+.btn-danger {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200;
+}
+
+/* Form styles */
+.form-input {
+  @apply block w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:ring-blue-400 dark:disabled:bg-slate-700;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300;
+}
+
+.form-error {
+  @apply mt-1 text-sm text-red-600 dark:text-red-400;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700;
+}
+
+.card-header {
+  @apply px-6 py-4 border-b border-slate-200 dark:border-slate-700;
+}
+
+.card-body {
+  @apply p-6;
+}
+
+.card-footer {
+  @apply px-6 py-4 border-t border-slate-200 dark:border-slate-700;
+}
+
+/* Badge styles */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full;
+}
+
+.badge-primary {
+  @apply badge bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300;
+}
+
+.badge-success {
+  @apply badge bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300;
+}
+
+.badge-warning {
+  @apply badge bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300;
+}
+
+.badge-error {
+  @apply badge bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300;
+}
+
+.badge-secondary {
+  @apply badge bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, rgb(59, 130, 246), rgb(147, 51, 234));
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, rgb(71, 85, 105), rgb(100, 116, 139));
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, rgb(34, 197, 94), rgb(16, 185, 129));
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, rgb(59, 130, 246), rgb(147, 51, 234));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Print styles */
+@media print {
+  .print-hidden {
+    display: none !important;
+  }
+  
+  .print-break-before {
+    page-break-before: always;
+  }
+  
+  .print-break-after {
+    page-break-after: always;
+  }
+}

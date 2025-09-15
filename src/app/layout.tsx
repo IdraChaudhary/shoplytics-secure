@@ -58,6 +58,7 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#ffffff" />
         <meta name="color-scheme" content="light dark" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
       </head>
       <body className={`${inter.variable} font-sans antialiased min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100`}>
         <ThemeProvider defaultTheme="system">

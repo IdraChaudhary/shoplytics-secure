@@ -24,12 +24,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/utils/*": ["./src/utils/*"]
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*", "./src/lib/*"],
+      "@/types/*": ["./types/*", "./src/types/*"],
+      "@/hooks/*": ["./hooks/*", "./src/hooks/*"],
+      "@/utils/*": ["./utils/*", "./src/utils/*"],
+      "@/contexts/*": ["./contexts/*"]
     }
   },
   "include": [

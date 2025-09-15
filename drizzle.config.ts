@@ -9,12 +9,11 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default {
-  schema: './src/lib/database/schemas/*.ts',
+  schema: './src/lib/database/schemas/index.ts',
   out: './database/migrations',
-  driver: 'pg',
+  dialect: 'postgresql',
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL!,
-    ssl: true
+    url: process.env.DATABASE_URL,
   },
   verbose: true,
   strict: true,

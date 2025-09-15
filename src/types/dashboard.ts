@@ -69,6 +69,9 @@ export interface ShopifyOrder {
   billing_address: ShopifyAddress;
   shipping_address: ShopifyAddress;
   discount_codes: ShopifyDiscountCode[];
+  shipping_lines: ShopifyShippingLine[];
+  source_name: string | null;
+  cancelled_at: string | null;
 }
 
 export interface ShopifyCustomer {
@@ -146,6 +149,12 @@ export interface ShopifyDiscountCode {
   code: string;
   amount: string;
   type: string;
+}
+
+export interface ShopifyShippingLine {
+  id: number;
+  price: string;
+  title: string;
 }
 
 // API Response types
