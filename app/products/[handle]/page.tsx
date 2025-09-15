@@ -1,5 +1,6 @@
 import { storefrontFetch, GQL } from '@/src/lib/storefront'
 import { notFound } from 'next/navigation'
+import AddToCartButton from '@/src/components/shop/AddToCartButton'
 
 export const revalidate = 0
 
@@ -10,7 +11,6 @@ export default async function ProductPage({ params }: { params: { handle: string
 
   const images: { url: string; altText?: string }[] = product.images?.edges?.map((e: any) => e.node) || []
   const variants: any[] = product.variants?.edges?.map((e: any) => e.node) || []
-  const firstVariant = variants[0]
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -44,17 +44,5 @@ export default async function ProductPage({ params }: { params: { handle: string
         </div>
       </div>
     </div>
-  )
-}
-
-'use client'
-import { useCart } from '@/src/components/store/cart'
-
-function AddToCartButton({ variant }: { variant: { id: string; title: string; price: string; image?: string; handle?: string } }) {
-  const { add } = useCart()
-  return (
-    <button onClick={() => add({ variantId: variant.id, quantity: 1, title: variant.title, price: variant.price, image: variant.image, handle: variant.handle })} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-      Add to Cart
-    </button>
   )
 }

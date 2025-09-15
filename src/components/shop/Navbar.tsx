@@ -5,7 +5,8 @@ import SearchBar from './SearchBar'
 import { useCart } from '../store/cart'
 
 export default function Navbar() {
-  const { open } = useCart()
+  const { open, lines } = useCart()
+  const count = lines.reduce((sum, l) => sum + (l.quantity || 0), 0)
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -15,9 +16,18 @@ export default function Navbar() {
         </Link>
         <SearchBar />
         <div className="flex items-center gap-4">
-          <Link href="/auth/signin" className="text-sm text-gray-700 hover:text-gray-900">Sign In</Link>
-          <button onClick={() => open()} className="relative inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm hover:bg-gray-50">
+          <Link href="/login" className="text-sm text-gray-700 hover:text-gray-900">Sign In</Link>
+          <button
+            onClick={() => open()}
+            aria-label="Open cart"
+            className="relative inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm hover:bg-gray-50"
+          >
             <ShoppingBag className="h-5 w-5" />
+            {count > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 min-w-[1rem] px-1 bg-blue-600 text-white rounded-full text-[10px] leading-4 text-center">
+                {count}
+              </span>
+            )}
           </button>
         </div>
       </div>
