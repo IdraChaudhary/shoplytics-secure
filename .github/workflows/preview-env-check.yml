@@ -1,0 +1,41 @@
+name: Preview env check (Vercel)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-vercel-envs:
+    name: Verify required envs in Vercel Preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        if: env.VERCEL_TOKEN != ''
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel preview envs
+        if: env.VERCEL_TOKEN != ''
+        run: vercel env pull .env.preview --environment=preview --yes
+
+      - name: Run env checks
+        if: env.VERCEL_TOKEN != ''
+        run: node scripts/ci-check-envs.js .env.preview
+
+      - name: Skip check (no Vercel token configured)
+        if: env.VERCEL_TOKEN == ''
+        run: |
+          echo "Skipping Vercel preview env check because VERCEL_TOKEN is not set in repo secrets."
+          echo "To enable this check, add VERCEL_TOKEN, VERCEL_ORG_ID, and VERCEL_PROJECT_ID repo secrets."
